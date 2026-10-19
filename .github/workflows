@@ -1,0 +1,44 @@
+name: Build LimeLight APK                                                                                                                      
+                                                                                                                                                   
+    on:                                                                                                                                            
+      push:                                                                                                                                        
+        branches: [ "**" ]                                                                                                                         
+      workflow_dispatch:                                                                                                                           
+                                                                                                                                                   
+    jobs:                                                                                                                                          
+      build:                                                                                                                                       
+        name: Build Android APK                                                                                                                    
+        runs-on: ubuntu-latest                                                                                                                     
+                                                                                                                                                   
+        steps:                                                                                                                                     
+          - name: Checkout Code                                                                                                                    
+            uses: actions/checkout@v4                                                                                                              
+                                                                                                                                                   
+          - name: Set up JDK 17                                                                                                                    
+            uses: actions/setup-java@v4                                                                                                            
+            with:                                                                                                                                  
+              distribution: 'temurin'                                                                                                              
+              java-version: '17'                                                                                                                   
+                                                                                                                                                   
+          - name: Setup Android SDK                                                                                                                
+            uses: android-actions/setup-android@v3                                                                                                 
+                                                                                                                                                   
+          - name: Setup Gradle 8.7                                                                                                                 
+            uses: gradle/actions/setup-gradle@v3                                                                                                   
+            with:                                                                                                                                  
+              gradle-version: '8.7'                                                                                                                
+                                                                                                                                                   
+          - name: Build Debug APK                                                                                                                  
+            working-directory: ./LimeLight                                                                                                         
+            run: gradle assembleDebug --stacktrace                                                                                                 
+                                                                                                                                                   
+          - name: Rename APK
+            run: |
+              mkdir -p release-output
+              cp LimeLight/app/build/outputs/apk/debug/*.apk release-output/LimeLight.apk
+  
+          - name: Upload LimeLight APK Artifact
+            uses: actions/upload-artifact@v4
+            with:
+              name: LimeLight-APK
+              path: release-output/LimeLight.apk
