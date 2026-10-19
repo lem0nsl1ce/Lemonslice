@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">LimeLight</string>
+    <string name="accessibility_service_description">LimeLight: Double-tap Volume Up to toggle the flashlight from anywhere.</string>
+</resources>
